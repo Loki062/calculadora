@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Margem Solar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 25px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #34495e;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .resultado {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #e9ecef;
+      font-weight: bold;
+    }
+    .positive {
+      color: #28a745;
+      font-weight: bold;
+    }
+    .negative {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    .section-title {
+      margin-top: 25px;
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid #eee;
+      color: #2c3e50;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora de Margem Solar</h1>
+    
+    <div class="input-group">
+      <label for="regiao">Unidade:</label>
+      <select id="regiao">
+        <option value="GYN">GYN - Goiânia</option>
+        <option value="SLB">SLB - São Luís</option>
+        <option value="SSM">SSM - Santa Maria</option>
+        <option value="GNS">GNS - Guanambi</option>
+        <option value="BSB">BSB - Brasília</option>
+        <option value="TNG">TNG - Tangará da Serra</option>
+        <option value="CON">CON - Confresa</option>
+        <option value="SNP">SNP - Sinop</option>
+        <option value="PAL">PAL - Palmas</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label for="valorProjeto">Valor do Projeto (R$):</label>
+      <input type="number" id="valorProjeto" value="21837.00" step="0.01">
+    </div>
+
+    <div class="input-group">
+      <label for="kwp">Potência do Sistema (kWp):</label>
+      <input type="number" id="kwp" value="7.93" step="0.01">
+    </div>
+
+    <div class="input-group">
+      <label for="potenciaPlaca">Potência da Placa (W):</label>
+      <input type="number" id="potenciaPlaca" value="600" step="1">
+    </div>
+
+    <div class="input-group">
+      <label for="cartaoCredito">Forma de Pagamento:</label>
+      <select id="cartaoCredito">
+        <option value="0">À vista (sem cartão)</option>
+        <option value="1">Débito</option>
+        <option value="2">Crédito à vista</option>
+        <option value="3">Crédito 2x</option>
+        <option value="4">Crédito 3x</option>
+        <option value="5">Crédito 4x</option>
+        <option value="6">Crédito 5x</option>
+        <option value="7">Crédito 6x</option>
+        <option value="8">Crédito 7x</option>
+        <option value="9">Crédito 8x</option>
+        <option value="10">Crédito 9x</option>
+        <option value="11">Crédito 10x</option>
+        <option value="12">Crédito 11x</option>
+        <option value="13">Crédito 12x</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label for="seguro">Seguro (R$):</label>
+      <input type="number" id="seguro" value="0" step="0.01">
+    </div>
+
+    <button onclick="calcular()">Calcular Margem</button>
+
+    <div class="resultado" id="resultado">
+      <h3 class="section-title">Resultados Financeiros</h3>
+      <table id="tabelaResultados">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Valor (R$)</th>
+            <th>% do Projeto</th>
+          </tr>
+        </thead>
+        <tbody id="resultadosBody">
+          <!-- Os resultados serão inseridos aqui pelo JavaScript -->
+        </tbody>
+      </table>
+      
+      <h3 class="section-title">Margens de Contribuição</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo de Margem</th>
+            <th>Valor (R$)</th>
+            <th>Percentual</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="margensBody">
+          <!-- As margens serão inseridas aqui pelo JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Tabelas de referência (valores por unidade e faixa de kWp)
+    const tabelas = {
+      perifericos: {
+        "GYN": { "0-7": 115.00, "7-15": 75.00, "15-45": 70.00, "45-75": 65.00, "75-500": 60.00, ">500": 50.00 },
+        "SLB": { "0-7": 115.00, "7-15": 75.00, "15-45": 70.00, "45-75": 65.00, "75-500": 60.00, ">500": 50.00 },
+        "SSM": { "0-7": 120.00, "7-15": 80.00, "15-45": 75.00, "45-75": 70.00, "75-500": 60.00, ">500": 50.00 },
+        "GNS": { "0-7": 120.00, "7-15": 80.00, "15-45": 75.00, "45-75": 70.00, "75-500": 60.00, ">500": 50.00 },
+        "BSB": { "0-7": 120.00, "7-15": 80.00, "15-45": 75.00, "45-75": 70.00, "75-500": 60.00, ">500": 50.00 },
+        "TNG": { "0-7": 130.00, "7-15": 90.00, "15-45": 85.00, "45-75": 70.00, "75-500": 60.00, ">500": 50.00 },
+        "CON": { "0-7": 140.00, "7-15": 100.00, "15-45": 90.00, "45-75": 80.00, "75-500": 70.00, ">500": 50.00 },
+        "SNP": { "0-7": 130.00, "7-15": 90.00, "15-45": 85.00, "45-75": 70.00, "75-500": 60.00, ">500": 50.00 },
+        "PAL": { "0-7": 130.00, "7-15": 90.00, "15-45": 85.00, "45-75": 70.00, "75-500": 60.00, ">500": 50.00 }
+      },
+      
+      engenharia: {
+        "GYN": { "0-7": 26.00, "7-15": 16.00, "15-45": 11.00, "45-75": 7.00, "75-500": 6.00, ">500": 5.00 },
+        "SLB": { "0-7": 26.00, "7-15": 16.00, "15-45": 11.00, "45-75": 7.00, "75-500": 6.00, ">500": 5.00 },
+        "SSM": { "0-7": 26.00, "7-15": 16.00, "15-45": 11.00, "45-75": 7.00, "75-500": 12.00, ">500": 10.00 },
+        "GNS": { "0-7": 26.00, "7-15": 16.00, "15-45": 11.00, "45-75": 7.00, "75-500": 6.00, ">500": 5.00 },
+        "BSB": { "0-7": 26.00, "7-15": 16.00, "15-45": 11.00, "45-75": 7.00, "75-500": 6.00, ">500": 5.00 },
+        "TNG": { "0-7": 26.00, "7-15": 16.00, "15-45": 11.00, "45-75": 7.00, "75-500": 6.00, ">500": 5.00 },
+        "CON": { "0-7": 26.00, "7-15": 16.00, "15-45": 11.00, "45-75": 7.00, "75-500": 6.00, ">500": 5.00 },
+        "SNP": { "0-7": 26.00, "7-15": 16.00, "15-45": 11.00, "45-75": 7.00, "75-500": 6.00, ">500": 5.00 },
+        "PAL": { "0-7": 26.00, "7-15": 16.00, "15-45": 11.00, "45-75": 7.00, "75-500": 6.00, ">500": 5.00 }
+      },
+
+      frete: {
+        "GYN": { "0-7": 60.00, "7-15": 55.00, "15-45": 54.00, "45-75": 40.00, "75-500": 35.00, ">500": 30.00 },
+        "SLB": { "0-7": 90.00, "7-15": 85.00, "15-45": 55.00, "45-75": 50.00, "75-500": 35.00, ">500": 30.00 },
+        "SSM": { "0-7": 70.00, "7-15": 60.00, "15-45": 50.00, "45-75": 40.00, "75-500": 35.00, ">500": 30.00 },
+        "GNS": { "0-7": 90.00, "7-15": 85.00, "15-45": 55.00, "45-75": 50.00, "75-500": 35.00, ">500": 30.00 },
+        "BSB": { "0-7": 90.00, "7-15": 85.00, "15-45": 55.00, "45-75": 50.00, "75-500": 35.00, ">500": 30.00 },
+        "TNG": { "0-7": 70.00, "7-15": 60.00, "15-45": 50.00, "45-75": 40.00, "75-500": 35.00, ">500": 30.00 },
+        "CON": { "0-7": 120.00, "7-15": 110.00, "15-45": 100.00, "45-75": 90.00, "75-500": 80.00, ">500": 60.00 },
+        "SNP": { "0-7": 90.00, "7-15": 85.00, "15-45": 55.00, "45-75": 50.00, "75-500": 35.00, ">500": 30.00 },
+        "PAL": { "0-7": 90.00, "7-15": 85.00, "15-45": 55.00, "45-75": 50.00, "75-500": 35.00, ">500": 30.00 }
+      },
+
+      montagemPorPlaca: {
+        "GYN": { "0-7": 72, "7-15": 72, "15-45": 67.5, "45-75": 63, "75-500": 58.5, ">500": 54 },
+        "SLB": { "0-7": 54, "7-15": 54, "15-45": 49.5, "45-75": 45, "75-500": 45, ">500": 40.5 },
+        "SSM": { "0-7": 72, "7-15": 72, "15-45": 72, "45-75": 54, "75-500": 54, ">500": 49.5 },
+        "GNS": { "0-7": 72, "7-15": 72, "15-45": 72, "45-75": 54, "75-500": 54, ">500": 49.5 },
+        "BSB": { "0-7": 90, "7-15": 90, "15-45": 85.5, "45-75": 81, "75-500": 76.5, ">500": 72 },
+        "TNG": { "0-7": 90, "7-15": 90, "15-45": 58.5, "45-75": 54, "75-500": 49.5, ">500": 45 },
+        "CON": { "0-7": 100, "7-15": 100, "15-45": 85.5, "45-75": 81, "75-500": 76.5, ">500": 72 },
+        "SNP": { "0-7": 90, "7-15": 90, "15-45": 85.5, "45-75": 81, "75-500": 76.5, ">500": 72 },
+        "PAL": { "0-7": 72, "7-15": 72, "15-45": 67.5, "45-75": 63, "75-500": 58.5, ">500": 54 }
+      },
+
+      montagemPorKwp: {
+        "GYN": { "0-7": 150, "7-15": 130, "15-45": 120 },
+        "SLB": { "0-7": 140, "7-15": 120, "15-45": 100 },
+        "SSM": { "0-7": 150, "7-15": 130, "15-45": 120 },
+        "GNS": { "0-7": 150, "7-15": 130, "15-45": 120 },
+        "BSB": { "0-7": 150, "7-15": 130, "15-45": 120 },
+        "TNG": { "0-7": 150, "7-15": 140, "15-45": 135 },
+        "CON": { "0-7": 170, "7-15": 160, "15-45": 150 },
+        "SNP": { "0-7": 150, "7-15": 140, "15-45": 135 },
+        "PAL": { "0-7": 150, "7-15": 140, "15-45": 135 }
+      },
+
+      markups: {
+        "GYN": 1.81,
+        "SLB": 1.81,
+        "SSM": 1.90,
+        "GNS": 1.81,
+        "BSB": 2.20,
+        "TNG": 1.81,
+        "CON": 2.01,
+        "SNP": 1.81,
+        "PAL": 1.81
+      },
+
+      taxasCartao: {
+        "0": 0.00,       // À vista
+        "1": 0.0099,     // Débito
+        "2": 0.0341,     // Crédito à vista
+        "3": 0.0434,     // 2x
+        "4": 0.0501,     // 3x
+        "5": 0.0569,     // 4x
+        "6": 0.0638,     // 5x
+        "7": 0.0706,     // 6x
+        "8": 0.0802,     // 7x
+        "9": 0.0871,     // 8x
+        "10": 0.0939,    // 9x
+        "11": 0.1007,    // 10x
+        "12": 0.1204,    // 11x
+        "13": 0.1291     // 12x
+      }
+    };
+
+    // Função para determinar a faixa de kWp
+    function getFaixaKwp(kwp) {
+      if (kwp <= 7) return "0-7";
+      else if (kwp <= 15) return "7-15";
+      else if (kwp <= 45) return "15-45";
+      else if (kwp <= 75) return "45-75";
+      else if (kwp <= 500) return "75-500";
+      else return ">500";
+    }
+
+    // Função para calcular o custo de montagem
+    function calcularMontagem(unidade, faixa, potencia, potenciaPlaca) {
+      const numPlacas = (potencia * 1000) / potenciaPlaca;
+      
+      if (faixa === "0-7" || faixa === "7-15" || faixa === "15-45") {
+        // Usa tabela por kWp para faixas menores
+        return tabelas.montagemPorKwp[unidade][faixa] * potencia;
+      } else {
+        // Usa tabela por placa para faixas maiores (com conversão implícita)
+        return tabelas.montagemPorPlaca[unidade][faixa] * numPlacas;
+      }
+    }
+
+    // Função para formatar valores monetários
+    function formatarMoeda(valor) {
+      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    // Função para formatar percentuais
+    function formatarPercentual(valor) {
+      return valor.toFixed(2).replace('.', ',') + '%';
+    }
+
+    // Função para adicionar linha na tabela de resultados
+    function addResultado(nome, valor, percentual, elemento = "resultadosBody") {
+      const tbody = document.getElementById(elemento);
+      const row = tbody.insertRow();
+      
+      const cellNome = row.insertCell(0);
+      cellNome.textContent = nome;
+      
+      const cellValor = row.insertCell(1);
+      cellValor.textContent = formatarMoeda(valor);
+      
+      const cellPercentual = row.insertCell(2);
+      cellPercentual.textContent = percentual ? formatarPercentual(percentual) : '-';
+      
+      if (nome.includes("Margem")) {
+        row.style.fontWeight = 'bold';
+        if (percentual < 7) {
+          row.classList.add('negative');
+        } else {
+          row.classList.add('positive');
+        }
+      }
+    }
+
+    function calcular() {
+      // Capturar valores dos inputs
+      const unidade = document.getElementById("regiao").value;
+      const valorProjeto = parseFloat(document.getElementById("valorProjeto").value);
+      const potencia = parseFloat(document.getElementById("kwp").value);
+      const potenciaPlaca = parseFloat(document.getElementById("potenciaPlaca").value);
+      const cartaoCredito = document.getElementById("cartaoCredito").value;
+      const seguro = parseFloat(document.getElementById("seguro").value);
+      const faixa = getFaixaKwp(potencia);
+      
+      // Limpar resultados anteriores
+      document.getElementById("resultadosBody").innerHTML = '';
+      document.getElementById("margensBody").innerHTML = '';
+
+      // --- CÁLCULOS BASE --- //
+      const markup = tabelas.markups[unidade];
+      const valorVenda = valorProjeto; // D4
+      const valorForaUsina = valorVenda - seguro; // D5 (simplificado)
+      
+      // Cálculo do número de placas
+      const numPlacas = (potencia * 1000) / potenciaPlaca;
+
+      // --- CUSTOS VARIÁVEIS --- //
+      // D10: Kit Fotovoltaico
+      const custoKit = valorVenda / markup; // D10
+      
+      // D12-D15: Custos fixos percentuais
+      const custoImpostos = valorVenda * 0.0925; // D12 (9.25%)
+      const custoMarketing = valorVenda * 0.01;  // D13 (1%)
+      const custoFundoPerdas = valorVenda * 0.01; // D14 (1%)
+      const custoFixo = valorVenda * 0.02;       // D15 (2%)
+      
+      // D17-D20: Custos variáveis
+      const custoPerifericos = tabelas.perifericos[unidade][faixa] * potencia; // D17
+      const custoEngenharia = tabelas.engenharia[unidade][faixa] * potencia;   // D18
+      const custoFrete = tabelas.frete[unidade][faixa] * potencia;             // D19
+      const custoMontagem = calcularMontagem(unidade, faixa, potencia, potenciaPlaca); // D20
+      
+      // D24: Total de Custos Variáveis
+      const totalCustos = custoKit + custoImpostos + custoMarketing + 
+                         custoFundoPerdas + custoFixo + custoPerifericos + 
+                         custoEngenharia + custoFrete + custoMontagem;
+      
+      // --- MARGENS DE CONTRIBUIÇÃO --- //
+      // D26: Margem de Contribuição 1
+      const margem1 = valorVenda - totalCustos;
+      const margem1Percentual = (margem1 / valorVenda) * 100;
+      
+      // D31-D32: Comissões
+      const comissaoFranquia = valorVenda * 0.07;    // 7% (E31)
+      const comissaoDepartamento = valorVenda * 0.018; // 1.8% (E32)
+      
+      // D35: Margem de Contribuição 2 (após comissões)
+      const margem2 = margem1 - comissaoFranquia - comissaoDepartamento;
+      const margem2Percentual = (margem2 / valorVenda) * 100;
+      
+      // --- CARTÃO DE CRÉDITO --- //
+      const taxaCartao = tabelas.taxasCartao[cartaoCredito];
+      const acrescimoCartao = valorVenda * taxaCartao;
+      
+      // Margem final considerando cartão
+      const margemFinal = margem2 - acrescimoCartao;
+      const margemFinalPercentual = (margemFinal / valorVenda) * 100;
+      
+      // Status da margem (aprovado/reprovado)
+      const statusMargem = margemFinalPercentual >= 7 ? "APROVADO" : "REPROVADO";
+      
+      // --- EXIBIR RESULTADOS --- //
+      
+      // 1. Informações básicas
+      addResultado("Valor do Projeto (D4)", valorVenda);
+      addResultado("Markup aplicado", 0, (markup - 1) * 100);
+      addResultado("Valor fora usina (D5)", valorForaUsina);
+      
+      // 2. Custos variáveis
+      addResultado("Kit Fotovoltaico (D10)", custoKit, (custoKit / valorVenda) * 100);
+      addResultado("Impostos (PIS/COFINS) (D12)", custoImpostos, 9.25);
+      addResultado("Marketing (D13)", custoMarketing, 1);
+      addResultado("Fundo de Perdas (D14)", custoFundoPerdas, 1);
+      addResultado("Custo Fixo (D15)", custoFixo, 2);
+      addResultado("Periféricos (D17)", custoPerifericos, (custoPerifericos / valorVenda) * 100);
+      addResultado("Engenharia (D18)", custoEngenharia, (custoEngenharia / valorVenda) * 100);
+      addResultado("Frete (D19)", custoFrete, (custoFrete / valorVenda) * 100);
+      addResultado("Montagem (D20)", custoMontagem, (custoMontagem / valorVenda) * 100);
+      addResultado("Total Custos Variáveis (D24)", totalCustos, (totalCustos / valorVenda) * 100);
+      
+      // 3. Margens
+      const margensBody = document.getElementById("margensBody");
+      
+      function addMargem(nome, valor, percentual) {
+        const row = margensBody.insertRow();
+        
+        const cellNome = row.insertCell(0);
+        cellNome.textContent = nome;
+        
+        const cellValor = row.insertCell(1);
+        cellValor.textContent = formatarMoeda(valor);
+        
+        const cellPercentual = row.insertCell(2);
+        cellPercentual.textContent = formatarPercentual(percentual);
+        
+        const cellStatus = row.insertCell(3);
+        if (nome.includes("Final")) {
+          cellStatus.textContent = percentual >= 7 ? "✅ APROVADO" : "❌ REPROVADO";
+          cellStatus.style.fontWeight = 'bold';
+          cellStatus.style.color = percentual >= 7 ? '#28a745' : '#dc3545';
+        } else {
+          cellStatus.textContent = '-';
+        }
+        
+        row.style.fontWeight = 'bold';
+        if (percentual < 7) {
+          row.classList.add('negative');
+        } else {
+          row.classList.add('positive');
+        }
+      }
+      
+      addMargem("Margem de Contribuição 1 (D26)", margem1, margem1Percentual);
+      addMargem("Margem de Contribuição 2 (D35)", margem2, margem2Percentual);
+      addMargem("Margem Final (com cartão)", margemFinal, margemFinalPercentual);
+      
+      // 4. Comissões e cartão
+      addResultado("Comissão Franquia/Venda (D31)", comissaoFranquia, 7);
+      addResultado("Comissão Departamento (D32)", comissaoDepartamento, 1.8);
+      
+      if (cartaoCredito !== "0") {
+        addResultado("Acréscimo Cartão de Crédito", acrescimoCartao, taxaCartao * 100);
+      }
+    }
+
+    // Calcular ao carregar a página
+    window.onload = calcular;
+  </script>
+</body>
+</html>
